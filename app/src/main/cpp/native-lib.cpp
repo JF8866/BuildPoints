@@ -11,24 +11,26 @@ extern "C"
 JNIEXPORT jint JNICALL
 Java_site_feiyuliuxing_buildpoints_BuildPoints_buildCenterRadiatePoints(
         JNIEnv *env, jobject thiz,
-        jfloatArray center_point,
+        jfloat cx, jfloat cy,
         jfloat radius,
         jfloat start_deg,
         jfloat end_deg,
         jfloat delta_deg,
         jint track_mode,
-        jfloatArray result_points
+        jfloatArray result_points,
+        jfloatArray lines_radius
 ) {
     jboolean isCopy = JNI_FALSE;
-    jfloat *cpoint = env->GetFloatArrayElements(center_point, &isCopy);
+    jfloat center_point[2] = {cx, cy};
     jfloat *rpoints = env->GetFloatArrayElements(result_points, &isCopy);
+    jfloat *lradius = env->GetFloatArrayElements(lines_radius, &isCopy);
     jint point_count = build_center_radiate_points(
-            cpoint, radius, start_deg, end_deg,
-            delta_deg, track_mode, rpoints
+            center_point, radius, start_deg, end_deg,
+            delta_deg, track_mode, rpoints, lradius
     );
-    env->ReleaseFloatArrayElements(center_point, cpoint, 0);
     // 更新到原始的 Java 数组中
     env->ReleaseFloatArrayElements(result_points, rpoints, 0);
+    env->ReleaseFloatArrayElements(lines_radius, lradius, 0);
     return point_count;
 }
 
@@ -36,26 +38,27 @@ extern "C"
 JNIEXPORT jint JNICALL
 Java_site_feiyuliuxing_buildpoints_BuildPoints_buildParallelPoints(
         JNIEnv *env, jobject thiz,
-        jfloatArray start_point,
-        jfloatArray end_point,
+        jfloat start_x, jfloat start_y,
+        jfloat end_x, jfloat end_y,
         jfloat distance,
         jfloat interval,
         jfloat direction_deg,
         jint track_mode,
-        jfloatArray result_points
+        jfloatArray result_points,
+        jfloatArray lines_radius
 ) {
-    jfloat *start = env->GetFloatArrayElements(start_point, nullptr);
-    jfloat *end = env->GetFloatArrayElements(end_point, nullptr);
-    jfloat *result = env->GetFloatArrayElements(result_points, nullptr);
+    jfloat start_point[2] = {start_x, start_y};
+    jfloat end_point[2] = {end_x, end_y};
+    jfloat *points = env->GetFloatArrayElements(result_points, nullptr);
+    jfloat *radius = env->GetFloatArrayElements(lines_radius, nullptr);
 
     jint point_count = build_parallel_points(
-            start, end, distance, interval,
-            direction_deg, track_mode, result
+            start_point, end_point, distance, interval,
+            direction_deg, track_mode, points, radius
     );
 
-    env->ReleaseFloatArrayElements(start_point, start, 0);
-    env->ReleaseFloatArrayElements(end_point, end, 0);
-    env->ReleaseFloatArrayElements(result_points, result, 0);
+    env->ReleaseFloatArrayElements(result_points, points, 0);
+    env->ReleaseFloatArrayElements(lines_radius, radius, 0);
     return point_count;
 }
 
@@ -97,7 +100,7 @@ Java_site_feiyuliuxing_buildpoints_BuildPoints_rotate(
     jint num = env->GetArrayLength(input_points) / 2;
 //    LOG_I("rotate 输入顶点个数 %d", num);
     jfloat *input = env->GetFloatArrayElements(input_points, nullptr);
-    jfloat center_point[2] = { cx, cy };
+    jfloat center_point[2] = {cx, cy};
     jfloat *result = env->GetFloatArrayElements(result_points, nullptr);
 
     jint res = rotate(input, result, center_point, theta_deg, num);
@@ -119,7 +122,7 @@ Java_site_feiyuliuxing_buildpoints_BuildPoints_shift(
     jint num = env->GetArrayLength(input_points) / 2;
 //    LOG_I("shift 输入顶点个数 %d", num);
     jfloat *input = env->GetFloatArrayElements(input_points, nullptr);
-    jfloat shift_vector[2] = { x_offset, y_offset };
+    jfloat shift_vector[2] = {x_offset, y_offset};
     jfloat *result = env->GetFloatArrayElements(result_points, nullptr);
 
     jint res = shift(input, result, shift_vector, num);
@@ -127,4 +130,47 @@ Java_site_feiyuliuxing_buildpoints_BuildPoints_shift(
     env->ReleaseFloatArrayElements(input_points, input, 0);
     env->ReleaseFloatArrayElements(result_points, result, 0);
     return res;
+}
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_site_feiyuliuxing_buildpoints_BuildPoints_buildImitationCirclePoints(
+        JNIEnv *env, jobject thiz,
+        jfloat l0, jfloat l1, jfloat l2,
+        jint distance_num,
+        jfloatArray x_distances,
+        jfloatArray y_distances,
+        jfloatArray result_points,
+        jfloatArray lines_radius
+) {
+    jfloat *xDistances = env->GetFloatArrayElements(x_distances, nullptr);
+    jfloat *yDistances = env->GetFloatArrayElements(y_distances, nullptr);
+    jfloat *points = env->GetFloatArrayElements(result_points, nullptr);
+    jfloat *radius = env->GetFloatArrayElements(lines_radius, nullptr);
+    jint point_count = build_imitation_circle_points(
+            l0, l1, l2, distance_num, xDistances,
+            yDistances, points, radius
+    );
+    env->ReleaseFloatArrayElements(x_distances, xDistances, 0);
+    env->ReleaseFloatArrayElements(y_distances, yDistances, 0);
+    env->ReleaseFloatArrayElements(result_points, points, 0);
+    env->ReleaseFloatArrayElements(lines_radius, radius, 0);
+    return point_count;
+}
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_site_feiyuliuxing_buildpoints_BuildPoints_buildCurvePoints(
+        JNIEnv *env, jobject thiz,
+        jfloat start_x, jfloat start_y,
+        jfloat end_x, jfloat end_y,
+        jfloat line_radius, jint num,
+        jfloatArray result_points
+) {
+    jfloat start_point[2] = {start_x, start_y};
+    jfloat end_point[2] = {end_x, end_y};
+    jfloat *points = env->GetFloatArrayElements(result_points, nullptr);
+    jint point_count = build_curve_points(start_point, end_point, line_radius, num, points);
+    env->ReleaseFloatArrayElements(result_points, points, 0);
+    return point_count;
 }

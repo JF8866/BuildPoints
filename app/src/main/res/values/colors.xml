@@ -7,4 +7,35 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="liberty_0">#FFCFF8F6</color>
+    <color name="liberty_1">#FF94D4D4</color>
+    <color name="liberty_2">#FF88B4BB</color>
+    <color name="liberty_3">#FF76AEAF</color>
+    <color name="liberty_4">#FF2A6D82</color>
+    <color name="joyful_0">#FFD9508A</color>
+    <color name="joyful_1">#FFFE9507</color>
+    <color name="joyful_2">#FFFEF778</color>
+    <color name="joyful_3">#FF6AA786</color>
+    <color name="joyful_4">#FF35C2D1</color>
+    <color name="pastel_0">#FF405980</color>
+    <color name="pastel_1">#FF95A57C</color>
+    <color name="pastel_2">#FFD9B8A2</color>
+    <color name="pastel_3">#FFBF8686</color>
+    <color name="pastel_4">#FFB33050</color>
+    <color name="colorful_0">#FFC12552</color>
+    <color name="colorful_1">#FFFF6600</color>
+    <color name="colorful_2">#FFF5C700</color>
+    <color name="colorful_3">#FF6A961F</color>
+    <color name="colorful_4">#FFB36435</color>
+    <color name="vordiplom_0">#FFC0FF8C</color>
+    <color name="vordiplom_1">#FFFFF78C</color>
+    <color name="vordiplom_2">#FFFFD08C</color>
+    <color name="vordiplom_3">#FF8CEAFF</color>
+    <color name="vordiplom_4">#FFFF8C9D</color>
+    <color name="material_0">#FF2ECC71</color>
+    <color name="material_1">#FFF1C40F</color>
+    <color name="material_2">#FFE74C3C</color>
+    <color name="material_3">#FF3498DB</color>
+
 </resources>

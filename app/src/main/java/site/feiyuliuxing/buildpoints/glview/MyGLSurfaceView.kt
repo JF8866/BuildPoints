@@ -5,16 +5,20 @@ import android.opengl.GLSurfaceView
 import android.util.AttributeSet
 
 class MyGLSurfaceView : GLSurfaceView {
-    private val renderer: Renderer
+    private val renderer: MyGLRenderer
 
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attr: AttributeSet) : super(context, attr)
 
     init {
-        // Create an OpenGL ES 2.0 context
-        setEGLContextClientVersion(2)
+        // Create an OpenGL ES 3.0 context
+        setEGLContextClientVersion(3)
         renderer = MyGLRenderer(context)
         setRenderer(renderer)
+    }
+
+    fun addPoints(points: FloatArray) {
+        renderer.addPoints(points)
     }
 }
